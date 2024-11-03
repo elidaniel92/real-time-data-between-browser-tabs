@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shared State with SharedWorker</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        #counter { margin: 20px; }
+        button { font-size: 1em; padding: 10px 20px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Shared Counter Across Tabs</h1>
+    <div id="counter">0</div>
+    <button id="increment">Increment</button>
+    <button id="reset">Reset to tab id</button>
+    <button id="decrement">Decrement</button>
+
+    <script>
+        // Initialize the SharedWorker
+        const worker = new SharedWorker('shared-worker.js');
+        
+        // Get the DOM elements
+        const counterDisplay = document.getElementById('counter');
+        const incrementButton = document.getElementById('increment');
+        const decrementButton = document.getElementById('decrement');
+        const resetButton = document.getElementById('reset');
+        
+        // Listen for messages from the worker
+        worker.port.onmessage = function(event) {
+            console.log('Message received from worker');
+            const element = document.getElementById("counter");
+            const { counter } = event.data;
+            element.style.fontSize = `${Math.abs(counter) + 2}em`;
+            if(counter >= 0) {                
+                element.style.color = "black";
+            } else {
+                element.style.color = "red";
+            }
+            counterDisplay.textContent = counter;
+        };
+        
+        // Send increment action to the worker
+        incrementButton.addEventListener('click', () => {
+            console.log('Message posted to worker');
+            worker.port.postMessage({ action: 'increment' });
+        });
+        
+        // Send decrement action to the worker
+        decrementButton.addEventListener('click', () => {
+            console.log('Message posted to worker');
+            worker.port.postMessage({ action: 'decrement' });
+        });
+
+        // Send decrement action to the worker
+        resetButton.addEventListener('click', () => {
+            console.log('Message posted to worker');
+            worker.port.postMessage({ action: 'reset' });
+        });
+
+        // Start the worker port
+        worker.port.start();
+    </script>
+</body>
+</html>
