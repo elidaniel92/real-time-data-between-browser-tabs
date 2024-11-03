@@ -6,7 +6,7 @@ Share and sync data in real-time between browser tabs with SharedWorker. It does
 
 ## 🏃‍♂️TL;DR
 
-View the website hosted on AWS S3: http://site-shared-worker.s3-website-us-east-1.amazonaws.com 
+View the website hosted on vercel: https://real-time-data-between-browser-tabs.vercel.app
 
 ## 📁 Project Structure
 
